@@ -1,9 +1,29 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Label } from "@radix-ui/react-label";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+const loginForm = z.object({
+  email: z.string().email(),
+});
+
+type LoginFormType = z.infer<typeof loginForm>;
+
 export function SignIn() {
+  const form = useForm<LoginFormType>();
+
+  async function login(data: LoginFormType) {
+    console.log("dados: ", data);
+    form.reset();
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
+  }
+
   return (
     <div className="p-8">
       <div className="flex w-[350px] flex-col justify-center gap-6">
@@ -16,13 +36,19 @@ export function SignIn() {
           </p>
         </div>
 
-        <form className="space-y-4">
+        <form onSubmit={form.handleSubmit(login)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Seu e-mail</Label>
-            <Input id="email" type="email" />
+            <Input {...form.register("email")} id="email" type="email" />
           </div>
 
-          <Button className="w-full" type="submit">Acessar painel</Button>
+          <Button
+            disabled={form.formState.isSubmitting}
+            className="w-full"
+            type="submit"
+          >
+            Acessar painel
+          </Button>
         </form>
       </div>
     </div>
