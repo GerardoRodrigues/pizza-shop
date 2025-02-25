@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Label } from "@radix-ui/react-label";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,13 @@ export function SignIn() {
     await new Promise((resolve) => {
       setTimeout(resolve, 2000);
     });
+
+    toast.success("Link de autenticação enviado ao email", {
+        action: {
+            label: "Reenviar",
+            onClick: () => login(data)
+        },
+    });
   }
 
   return (
@@ -39,7 +47,12 @@ export function SignIn() {
         <form onSubmit={form.handleSubmit(login)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Seu e-mail</Label>
-            <Input {...form.register("email")} id="email" type="email" />
+            <Input
+              required
+              {...form.register("email")}
+              id="email"
+              type="email"
+            />
           </div>
 
           <Button
