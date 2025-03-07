@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Label } from "@radix-ui/react-label";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import * as z from "zod";
 
+import { signIn } from "@/api/sign-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -17,28 +19,30 @@ type LoginFormType = z.infer<typeof loginForm>;
 export function SignIn() {
   const form = useForm<LoginFormType>();
 
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn,
+  });
+
   async function login(data: LoginFormType) {
-    console.log("dados: ", data);
-    form.reset();
+    try {
+      await authenticate({ email: data.email });
+      form.reset();
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 2000);
-    });
-
-    toast.success("Link de autenticação enviado ao email", {
+      toast.success("Link de autenticação enviado ao email", {
         action: {
-            label: "Reenviar",
-            onClick: () => login(data)
+          label: "Reenviar",
+          onClick: () => login(data),
         },
-    });
+      });
+    } catch (error) {
+      toast.error("Credenciais inválidas");
+    }
   }
 
   return (
     <div className="p-8">
       <Button variant="ghost" asChild className="absolute right-8 top-8">
-        <Link to="/sign-up">
-          Novo estabelecimento
-        </Link>
+        <Link to="/sign-up">Novo estabelecimento</Link>
       </Button>
       <div className="flex w-[350px] flex-col justify-center gap-6">
         <div className="flex flex-col gap-2 text-center">
