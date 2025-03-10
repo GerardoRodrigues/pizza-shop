@@ -1,9 +1,11 @@
 import { api } from "@/lib/axios";
-import { JSX } from "react/jsx-runtime";
+
+export interface GetOrdersQuery {
+  pageIndex?: number | null;
+}
 
 export interface GetOrdersResponse {
   orders: {
-    map(arg0: (order: any) => JSX.Element): import("react").ReactNode;
     orderId: string;
     createdAt: string;
     status: "pending" | "canceled" | "processing" | "delivering" | "delivered";
@@ -17,10 +19,10 @@ export interface GetOrdersResponse {
   };
 }
 
-export async function getOders() {
+export async function getOders({pageIndex}: GetOrdersQuery) {
   const response = await api.get<GetOrdersResponse>("/orders", {
     params: {
-      pageIndex: 0,
+      pageIndex,
     },
   });
   return response.data;
