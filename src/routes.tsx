@@ -7,12 +7,13 @@ import { Dashboard } from "./pages/app/dashboard/dashboard";
 import { Orders } from "./pages/app/orders/orders";
 import { SignIn } from "./pages/auth/sign-in/sign-in";
 import { SingUp } from "./pages/auth/sign-up/sign-up";
+import { Error } from "./pages/error";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout/>,
-    errorElement: <NotFound />,
+    errorElement: <Error />,
     children:[
       {
         path: "/",
@@ -37,5 +38,9 @@ export const router = createBrowserRouter([
         element: <SingUp />
       }
     ]
+  },
+  {
+    path: '*',
+    element: <NotFound />
   }
 ]);
